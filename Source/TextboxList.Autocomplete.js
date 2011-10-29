@@ -4,16 +4,16 @@ Script: TextboxList.Autocomplete.js
 
 	Authors:
 		Guillermo Rauch
-	
+
 	Note:
 		TextboxList is not priceless for commercial use. See <http://devthought.com/projects/jquery/textboxlist/>
 		Purchase to remove this message.
 */
 
 (function(){
-	
+
 $.TextboxList.Autocomplete = function(textboxlist, _options){
-	
+
   var index, prefix, method, container, list, values = [], searchValues = [], results = [], placeholder = false, current, currentInput, suggestInput, hidetimer, doAdd, currentSearch, currentRequest;
 	var options = $.extend(true, {
 		minLength: 1,
@@ -34,7 +34,7 @@ $.TextboxList.Autocomplete = function(textboxlist, _options){
 		method: 'standard',
 		placeholder: 'Type to receive suggestions'
 	}, _options);
-	
+
 	var init = function(){
 		textboxlist.addEvent('bitEditableAdd', setupBit)
 			.addEvent('bitEditableFocus', search)
@@ -44,12 +44,12 @@ $.TextboxList.Autocomplete = function(textboxlist, _options){
 		prefix = textboxlist.getOptions().prefix + '-autocomplete';
 		method = $.TextboxList.Autocomplete.Methods[options.method];
 		container = $('<div class="'+ prefix +'" />').width(textboxlist.getContainer().width()).appendTo(textboxlist.getContainer());
-		if (chk(options.placeholder)) placeholder = $('<div class="'+ prefix +'-placeholder" />').html(options.placeholder).appendTo(container);		
+		if (chk(options.placeholder)) placeholder = $('<div class="'+ prefix +'-placeholder" />').html(options.placeholder).appendTo(container);
 		list = $('<ul class="'+ prefix +'-results" />').appendTo(container).click(function(ev){
 			ev.stopPropagation(); ev.preventDefault();
 		});
 	};
-	
+
 	var self = this;
 	var setupBit = function(bit){
 		bit.getInput().keydown(navigate).keyup(function(){ search(); });
@@ -57,7 +57,7 @@ $.TextboxList.Autocomplete = function(textboxlist, _options){
 		  suggestInput = new $.SuggestInput(bit, textboxlist, self);
 		}
 	};
-	
+
 	var search = function(bit){
 		if (bit) currentInput = bit;
 		if (!options.queryRemote && !values.length) return;
@@ -89,11 +89,11 @@ $.TextboxList.Autocomplete = function(textboxlist, _options){
 		}
 		showResults(search);
 	};
-	
+
 	var showResults = function(search){
 		var results = method.filter(values, search, options.insensitive, options.maxResults);
 		if (textboxlist.getOptions().unique){
-			results = $.grep(results, function(v){ return textboxlist.isDuplicate(v) == -1; });		
+			results = $.grep(results, function(v){ return textboxlist.isDuplicate(v) == -1; });
 		}
 		hidePlaceholder();
 		if (!results.length) {
@@ -107,9 +107,9 @@ $.TextboxList.Autocomplete = function(textboxlist, _options){
 		if (options.inlineSuggest) suggestInput.suggest(results[0][1]);
 		results = results;
 	};
-	
+
 	var addResult = function(r, searched){
-		var element = $('<li class="'+ prefix +'-result" />').html(r[3] ? r[3] : r[1]).data('textboxlist:auto:value', r);		
+		var element = $('<li class="'+ prefix +'-result" />').html(r[3] ? r[3] : r[1]).data('textboxlist:auto:value', r);
 		element.appendTo(list);
 		if (options.highlight) $(options.highlightSelector ? element.find(options.highlightSelector) : element).each(function(){
 			if ($(this).html()) method.highlight($(this), searched, options.insensitive, prefix + '-highlight');
@@ -117,7 +117,7 @@ $.TextboxList.Autocomplete = function(textboxlist, _options){
 		if (options.mouseInteraction){
 			element.css('cursor', 'pointer').hover(function(){ focus(element); }).mousedown(function(ev){
 			  if(ev.which != 1) return;
-				ev.stopPropagation(); 
+				ev.stopPropagation();
 				ev.preventDefault();
 				clearTimeout(hidetimer);
 				doAdd = true;
@@ -129,48 +129,48 @@ $.TextboxList.Autocomplete = function(textboxlist, _options){
 					doAdd = false;
 				}
 			});
-			if (!options.onlyFromValues) element.mouseleave(function(){ if (current && (current.get(0) == element.get(0))) blur(); });	
+			if (!options.onlyFromValues) element.mouseleave(function(){ if (current && (current.get(0) == element.get(0))) blur(); });
 		}
 	};
-	
+
 	var hide = function(){
 		hidetimer = setTimeout(function(){
 			hidePlaceholder();
 			list.hide();
-			currentSearch = null;			
+			currentSearch = null;
 		}, $.browser.msie ? 150 : 0);
 	};
-	
+
 	var showPlaceholder = function(){
-		if (placeholder) placeholder.css('display', 'block');		
+		if (placeholder) placeholder.css('display', 'block');
 	};
-	
+
 	var hidePlaceholder = function(){
 		if (placeholder) placeholder.css('display', 'none');
 	};
-	
+
 	var focus = function(element){
 		if (!element || !element.length) return;
 		blur();
 		current = element.addClass(prefix + '-result-focus');
 	};
-	
+
 	var blur = function(){
 		if (current && current.length){
 			current.removeClass(prefix + '-result-focus');
 			current = null;
 		}
 	};
-	
+
 	var focusFirst = function(){
 		return focus(list.find(':first'));
 	};
-	
+
 	var focusRelative = function(dir){
 		if (!current || !current.length) return self;
 		return focus(current[dir]());
 	};
-	
+
 	var addCurrent = function(){
 		var value = current.data('textboxlist:auto:value');
 		var b = textboxlist.create('box', value.slice(0, 3));
@@ -183,7 +183,7 @@ $.TextboxList.Autocomplete = function(textboxlist, _options){
 		blur();
 		return self;
 	};
-	
+
 	var navigate = function(ev){
 		var evStop = function(){ ev.stopPropagation(); ev.preventDefault(); };
 		switch (ev.which){
@@ -202,7 +202,7 @@ $.TextboxList.Autocomplete = function(textboxlist, _options){
 				evStop();
 				if (current && current.length) addCurrent();
 				else if (!options.onlyFromValues){
-					var value = currentInput.getValue();				
+					var value = currentInput.getValue();
 					var b = textboxlist.create('box', value);
 					if (b){
 						b.inject(currentInput.toElement(), 'before');
@@ -219,20 +219,20 @@ $.TextboxList.Autocomplete = function(textboxlist, _options){
 			    evStop();
 		}
 	};
-	
+
 	this.setValues = function(v){
 		values = v;
 	};
-	
+
 	this.getOptions = function(){
 		return options;
 	};
-	
+
 	init();
 };
 
 $.TextboxList.Autocomplete.Methods = {
-	
+
 	standard: {
 		filter: function(values, search, insensitive, max){
 			var newvals = [], regexp = new RegExp('\\b' + escapeRegExp(search), insensitive ? 'i' : '');
@@ -242,15 +242,15 @@ $.TextboxList.Autocomplete.Methods = {
 			}
 			return newvals;
 		},
-		
+
 		highlight: function(element, search, insensitive, klass){
 			var regex = new RegExp('(<[^>]*>)|(\\b'+ escapeRegExp(search) +')', insensitive ? 'ig' : 'g');
 			return element.html(element.html().replace(regex, function(a, b, c){
-				return (a.charAt(0) == '<') ? a : '<strong class="'+ klass +'">' + c + '</strong>'; 
+				return (a.charAt(0) == '<') ? a : '<strong class="'+ klass +'">' + c + '</strong>';
 			}));
 		}
 	}
-	
+
 };
 
 var chk = function(v){ return !!(v || v === 0); };

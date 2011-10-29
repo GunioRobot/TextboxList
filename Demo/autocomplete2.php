@@ -3,7 +3,7 @@
 // TextboxList Autocomplete sample data for queryRemote: true (server is queried as user types)
 
 // get names  (eg: database)
-// the format is: 
+// the format is:
 // id, searchable plain text, html (for the textboxlist item, if empty the plain is used), html (for the autocomplete dropdown)
 
 $response = array();

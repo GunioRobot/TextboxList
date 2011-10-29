@@ -4,57 +4,57 @@
 	<head>
 		<meta http-equiv="Content-type" content="text/html; charset=utf-8">
 		<title>jQuery TextboxList Demo</title>
-		
+
 		<!-- TextboxList is not priceless for commercial use. See <http://devthought.com/projects/jquery/textboxlist/> -->
-		
+
 		<!-- required stylesheet for TextboxList -->
 		<link rel="stylesheet" href="../Source/TextboxList.css" type="text/css" media="screen" charset="utf-8" />
 		<!-- required stylesheet for TextboxList.Autocomplete -->
 		<link rel="stylesheet" href="../Source/TextboxList.Autocomplete.css" type="text/css" media="screen" charset="utf-8" />
-		
-		<script src="jquery-1.3.2.min.js" type="text/javascript" charset="utf-8"></script>		
+
+		<script src="jquery-1.3.2.min.js" type="text/javascript" charset="utf-8"></script>
 
 		<!-- required for TextboxList -->
 		<script src="GrowingInput.js" type="text/javascript" charset="utf-8"></script>
-				
-		<script src="../Source/TextboxList.js" type="text/javascript" charset="utf-8"></script>		
+
+		<script src="../Source/TextboxList.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../Source/TextboxList.Autocomplete.js" type="text/javascript" charset="utf-8"></script>
 		<!-- required for TextboxList.Autocomplete if method set to 'binary' -->
-		<script src="../Source/TextboxList.Autocomplete.Binary.js" type="text/javascript" charset="utf-8"></script>		
-		
+		<script src="../Source/TextboxList.Autocomplete.Binary.js" type="text/javascript" charset="utf-8"></script>
+
 		<!-- sample initialization -->
-		<script type="text/javascript" charset="utf-8">		
+		<script type="text/javascript" charset="utf-8">
 			$(function(){
 				// Standard initialization
 				var t = new $.TextboxList('#form_tags_input', {  });
-				t.add('Tag 1').add('Tag 2').add('Tag 3');				
-				
-				// With custom adding keys 
+				t.add('Tag 1').add('Tag 2').add('Tag 3');
+
+				// With custom adding keys
 				var t2 = $('#form_tags_input_2').textboxlist({bitsOptions:{editable:{addKeys: [188]}}});
-				
+
 				// Autocomplete initialization
 				var t4 = new $.TextboxList('#form_tags_input_3', {unique: true, plugins: {autocomplete: {}}});
 				t4.add('John Doe').add('Jane Roe');
-				
-				// sample data loading with json, but can be jsonp, local, etc. 
+
+				// sample data loading with json, but can be jsonp, local, etc.
 				// the only requirement is that you call setValues with an array of this format:
 				// [
 				//	[id, bit_plaintext (on which search is performed), bit_html (optional, otherwise plain_text is used), autocomplete_html (html for the item displayed in the autocomplete suggestions dropdown)]
 				// ]
 				// read autocomplete.php for a JSON response exmaple
-				t4.getContainer().addClass('textboxlist-loading');				
+				t4.getContainer().addClass('textboxlist-loading');
 				$.ajax({url: 'autocomplete.php', dataType: 'json', success: function(r){
 					t4.plugins['autocomplete'].setValues(r);
 					t4.getContainer().removeClass('textboxlist-loading');
-				}});				
-				
+				}});
+
 				// Autocomplete with poll the server as you type
 				var t5 = new $.TextboxList('#form_tags_input_4', {unique: true, plugins: {autocomplete: {
 					minLength: 2,
 					queryRemote: true,
 					remote: {url: 'autocomplete2.php'}
 				}}});
-				t5.add('John Doe').add('Jane Roe');				
+				t5.add('John Doe').add('Jane Roe');
 			});
 		</script>
 
